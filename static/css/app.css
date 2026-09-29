@@ -1,0 +1,674 @@
+:root {
+    --bg: #14161a;
+    --panel: #1d2027;
+    --panel-2: #24282f;
+    --line: #333944;
+    --text: #e6e9ef;
+    --muted: #939bab;
+    --accent: #4a9eff;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --danger: #f05252;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+    header h1 {
+        font-size: 17px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    header .spacer {
+        flex: 1;
+    }
+
+main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Sidebar shell (alarm pages) */
+.shell {
+    display: flex;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+aside {
+    flex: 0 0 220px;
+    align-self: stretch;
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.brand {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 8px;
+}
+
+    .brand small {
+        display: block;
+        font-size: 12px;
+        font-weight: 400;
+        color: var(--muted);
+        margin-top: 2px;
+        word-break: break-all;
+    }
+
+nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+    nav a {
+        padding: 9px 12px;
+        border-radius: 6px;
+        color: var(--muted);
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+        nav a:hover {
+            background: var(--panel-2);
+            color: var(--text);
+        }
+
+        nav a.active {
+            background: var(--accent);
+            color: #08111c;
+            font-weight: 600;
+        }
+
+        nav a.disabled {
+            opacity: .4;
+            cursor: default;
+        }
+
+            nav a.disabled:hover {
+                background: none;
+                color: var(--muted);
+            }
+
+aside .foot {
+    margin-top: auto;
+}
+
+    aside .foot button {
+        width: 100%;
+    }
+
+.shell main {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.view {
+    display: none;
+}
+
+    .view.active {
+        display: block;
+    }
+
+@media (max-width: 760px) {
+    .shell {
+        flex-direction: column;
+    }
+
+    aside {
+        flex: none;
+        width: auto;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 16px;
+    }
+
+    /* Brand and the "All alarms" button share the top row; everything else wraps below it. */
+    .brand {
+        order: 0;
+        flex: 1 1 auto;
+        padding: 0;
+    }
+
+    aside .foot {
+        order: 1;
+        margin-top: 0;
+    }
+
+        aside .foot button {
+            width: auto;
+        }
+
+    #switcher {
+        order: 2;
+        flex: 1 1 100%;
+    }
+
+    nav {
+        order: 3;
+        flex: 1 1 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    /* Reclaim the horizontal padding, which costs more than it is worth on a narrow screen. */
+    th, td {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    /* Fixed column widths leave editable cells unusably narrow on a phone, so rows become
+       stacked, labelled blocks instead. Labels come from each cell's data-label. */
+    table.stack thead {
+        display: none;
+    }
+
+    table.stack tr {
+        display: block;
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    table.stack td {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        border: none;
+        padding: 4px 0;
+        width: auto !important;
+    }
+
+        table.stack td::before {
+            content: attr(data-label);
+            flex: 0 0 88px;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        table.stack td > * {
+            flex: 1;
+        }
+
+        table.stack td input[type="checkbox"] {
+            flex: 0 0 auto;
+        }
+
+        table.stack td.actions {
+            justify-content: flex-end;
+            gap: 8px;
+            padding-top: 10px;
+        }
+
+            table.stack td.actions::before {
+                display: none;
+            }
+
+            table.stack td.actions > * {
+                flex: 0 0 auto;
+            }
+}
+
+section {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+    section > h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: .06em;
+        color: var(--muted);
+        margin: 0;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        section > h2 .spacer {
+            flex: 1;
+        }
+
+.body {
+    padding: 16px;
+}
+
+.pane + .pane {
+    border-top: 1px solid var(--line);
+}
+
+.subhead {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin: 0 0 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+th {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr.clickable {
+    cursor: pointer;
+}
+
+    tbody tr.clickable:hover {
+        background: var(--panel-2);
+    }
+
+button {
+    font: inherit;
+    color: var(--text);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 7px 14px;
+    cursor: pointer;
+}
+
+    button:hover:not(:disabled) {
+        border-color: var(--accent);
+    }
+
+    button:disabled {
+        opacity: .45;
+        cursor: default;
+    }
+
+    button.busy {
+        opacity: .85;
+        cursor: wait;
+    }
+
+.spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin .75s linear infinite;
+    vertical-align: -1px;
+    margin-right: 6px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+    button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #08111c;
+        font-weight: 600;
+    }
+
+    button.danger {
+        color: var(--danger);
+    }
+
+        button.danger:hover:not(:disabled) {
+            border-color: var(--danger);
+        }
+
+    button.small {
+        padding: 4px 10px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+input, select {
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 7px 10px;
+    width: 100%;
+}
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--accent);
+    }
+
+.mode {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid;
+    white-space: nowrap;
+}
+
+.mode-disarm {
+    color: var(--ok);
+    border-color: var(--ok);
+}
+
+/* Power switch on/off toggle - red for off, green for on. */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .switch .slider {
+        position: absolute;
+        inset: 0;
+        background: var(--danger);
+        transition: .2s;
+        border-radius: 28px;
+        cursor: pointer;
+    }
+
+        .switch .slider::before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            transition: .2s;
+            border-radius: 50%;
+        }
+
+    .switch input:checked + .slider {
+        background: var(--ok);
+    }
+
+        .switch input:checked + .slider::before {
+            transform: translateX(24px);
+        }
+
+    .switch input:disabled + .slider {
+        opacity: .6;
+        cursor: wait;
+    }
+
+.mode-awayarm {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.mode-homearm {
+    color: var(--warn);
+    border-color: var(--warn);
+}
+
+.mode-awayarminprogress {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.mode-homearminprogress {
+    color: var(--warn);
+    border-color: var(--warn);
+}
+
+.mode-disconnected {
+    color: var(--muted);
+    border-color: var(--line);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+}
+
+.media-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+    .media-grid figure {
+        margin: 0;
+    }
+
+    .media-grid img {
+        display: block;
+        max-width: 100%;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+    }
+
+    .media-grid .check {
+        margin-bottom: 6px;
+    }
+
+    .media-grid figcaption {
+        margin-top: 6px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+.field label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--muted);
+    margin-bottom: 5px;
+}
+
+.kv {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+    .kv div {
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .kv strong {
+        display: block;
+        color: var(--text);
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+.row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .check input {
+        width: auto;
+    }
+
+.muted {
+    color: var(--muted);
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.empty {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* Signal strength meter. Panels report on different scales, so the reading is normalised to
+   five bars by the caller and only the level is rendered here. */
+.bars {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+}
+
+    .bars i {
+        display: block;
+        width: 3px;
+        border-radius: 1px;
+        background: var(--line);
+    }
+
+        .bars i:nth-child(1) {
+            height: 4px;
+        }
+
+        .bars i:nth-child(2) {
+            height: 6px;
+        }
+
+        .bars i:nth-child(3) {
+            height: 9px;
+        }
+
+        .bars i:nth-child(4) {
+            height: 11px;
+        }
+
+        .bars i:nth-child(5) {
+            height: 14px;
+        }
+
+    .bars.weak i.on {
+        background: var(--danger);
+    }
+
+    .bars.fair i.on {
+        background: var(--warn);
+    }
+
+    .bars.good i.on {
+        background: var(--ok);
+    }
+
+#toast {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 50;
+}
+
+    #toast div {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-left-width: 3px;
+        border-radius: 6px;
+        padding: 10px 16px;
+        max-width: 380px;
+        box-shadow: 0 6px 20px rgba(0,0,0,.4);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+        #toast div span {
+            flex: 1;
+        }
+
+    #toast .ok {
+        border-left-color: var(--ok);
+    }
+
+    #toast .warn {
+        border-left-color: var(--warn);
+    }
+
+    #toast .err {
+        border-left-color: var(--danger);
+    }
+
+.banner-warn {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--warn);
+    border-radius: 6px;
+    color: var(--warn);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+}

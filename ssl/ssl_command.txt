@@ -1,0 +1,8 @@
+To generate a new certificate for this service this exact command must be used:
+
+Generate certificate and key:
+$ openssl req -new -x509 -newkey rsa:2048 -nodes -keyout yale-home-system-key.pem -out yale-home-system-cert.pem -days 1825 -set_serial 0x2f77baa084db0f75 -config cert_full.cnf
+
+NOTE: The generated certificate only superficially looks like the one presented by the original server.
+Ultimately the private key is different thus if the alarm is actually validating it - it will fail.
+CTC-1815 doesn't validate but yamga alarms do validate it and fail.

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alarm</title>
+    <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+    <div class="shell">
+        <aside>
+            <div class="brand">
+                Alarm Home Server
+                <small id="brandId">-</small>
+            </div>
+
+            <select id="switcher"></select>
+
+            <nav>
+                <a data-view="mode" href="#mode">Mode</a>
+                <a data-view="control" href="#control">Control</a>
+                <a data-view="media" href="#media">Saved media</a>
+                <a data-view="history" href="#history">History</a>
+                <a data-view="users" href="#users">Users</a>
+                <a data-view="walktest" href="#walktest">Walk test</a>
+                <a data-view="devices" href="#devices">Devices</a>
+                <a data-view="pairing" href="#pairing">Pairing</a>
+                <a data-view="config" href="#config">System config</a>
+                <a data-view="info" href="#info">Info</a>
+            </nav>
+
+            <div class="foot">
+                <button onclick="location.href='/'">All alarms</button>
+            </div>
+        </aside>
+
+        <main>
+            <section id="view-mode" class="view">
+                <h2>Mode<span class="spacer"></span><span id="mode"></span></h2>
+                <div class="body pane">
+                    <div class="row">
+                        <button class="primary" data-mode="AwayArm">Away Arm</button>
+                        <button class="primary" data-mode="HomeArm">Home Arm</button>
+                        <button class="primary" data-mode="Disarm">Disarm</button>
+                        <select id="asUser" style="width:auto"></select>
+                    </div>
+                </div>
+                <div class="body pane">
+                    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+                        <h3 class="subhead" style="margin:0">Windows and doors open</h3>
+                        <button class="small" id="refreshOpen">Refresh</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width:70px">Index</th>
+                                <th>Device</th>
+                                <th style="width:200px">Open since</th>
+                                <th style="width:150px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="openDevices"></tbody>
+                    </table>
+                    <div id="noOpen" class="empty" hidden>Nothing is reporting as open.</div>
+                </div>
+            </section>
+
+            <section id="view-control" class="view">
+                <h2>Control</h2>
+                <div id="controlPanes"></div>
+                <div id="noControlDevices" class="empty" hidden>No power switches or cameras to control.</div>
+            </section>
+
+            <section id="view-media" class="view">
+                <h2>Saved media<span class="spacer"></span><button class="small danger" id="deleteSelectedMedia">Delete selected</button><button class="small" id="refreshMedia">Refresh</button></h2>
+                <div class="body">
+                    <div id="mediaGrid" class="media-grid"></div>
+                    <div id="noMedia" class="empty" hidden>No saved media.</div>
+                </div>
+            </section>
+
+            <section id="view-history" class="view">
+                <h2>
+                    Event log
+                    <span class="spacer"></span>
+                    <span id="clock" class="muted"></span>
+                    <button class="small" id="refreshHistory">Refresh</button>
+                </h2>
+                <table class="stack">
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Event</th>
+                            <th style="width:170px">Panel time</th>
+                            <th style="width:170px">Age</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries"></tbody>
+                </table>
+                <div id="historyStatus" class="empty">Loading&hellip;</div>
+            </section>
+
+            <section id="view-users" class="view">
+                <h2>Users</h2>
+                <table class="stack">
+                    <thead>
+                        <tr>
+                            <th style="width:70px">Slot</th>
+                            <th>Name</th>
+                            <th>PIN</th>
+                            <th style="width:110px">CID report</th>
+                            <th style="width:150px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="users"></tbody>
+                </table>
+                <div class="body">
+                    <div class="grid">
+                        <div class="field">
+                            <label for="newName">New user name</label>
+                            <input id="newName" maxlength="10" />
+                        </div>
+                        <div class="field">
+                            <label for="newPin">PIN</label>
+                            <input id="newPin" inputmode="numeric" pattern="[0-9]*" />
+                        </div>
+                        <div class="field">
+                            <label>&nbsp;</label>
+                            <div class="check">
+                                <input type="checkbox" id="newLatch" />
+                                <label for="newLatch" style="margin:0;text-transform:none;font-size:14px">Send CID report</label>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>&nbsp;</label>
+                            <button class="primary" id="addUser">Add user</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-walktest" class="view">
+                <h2>Walk test</h2>
+                <div class="body">
+                    <div class="row">
+                        <button class="primary" id="walkToggle">Start walk test</button>
+                        <span class="muted" id="walkMessage">Puts the panel into walk test, then reports each device as it is triggered.</span>
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:110px">Time</th>
+                            <th style="width:70px">Index</th>
+                            <th>Device</th>
+                            <th style="width:90px">Signal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="walkSignals"></tbody>
+                </table>
+                <div id="noWalkSignals" class="empty">No signals received yet.</div>
+            </section>
+
+            <section id="view-devices" class="view">
+                <h2>Devices</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:44px">Index</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th style="width:1%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="devices"></tbody>
+                </table>
+                <div id="noDevices" class="empty" hidden>No devices.</div>
+            </section>
+
+            <section id="view-device" class="view">
+                <h2>Edit device<span class="spacer"></span><button class="small" id="deviceBack">Back</button></h2>
+                <div class="body">
+                    <div class="kv" style="margin-bottom:16px">
+                        <div>Index<strong id="deviceIndex">-</strong></div>
+                        <div>Type<strong id="deviceType">-</strong></div>
+                        <div>Radio ID<strong id="deviceRadioId">-</strong></div>
+                    </div>
+                    <div class="grid">
+                        <div class="field">
+                            <label for="deviceName">Name</label>
+                            <input id="deviceName" />
+                        </div>
+                        <div class="field" id="deviceModeField" hidden>
+                            <label for="deviceMode">Mode</label>
+                            <select id="deviceMode"></select>
+                        </div>
+                        <div class="field" id="deviceBypassField">
+                            <label for="deviceBypass">Bypass</label>
+                            <input type="checkbox" id="deviceBypass" style="width:auto" />
+                        </div>
+                        <div class="field">
+                            <label>&nbsp;</label>
+                            <div class="row">
+                                <button class="primary" id="saveDevice">Save</button>
+                                <button class="danger" id="deleteDevice">Delete device</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-pairing" class="view">
+                <h2>Pair a device</h2>
+                <div class="body">
+                    <div class="row" id="learnControls">
+                        <button class="primary" id="learnToggle">Start pairing</button>
+                        <span id="learnMessage" class="muted">Puts the panel into learn mode, then waits for a device to transmit.</span>
+                    </div>
+
+                    <div id="learnFound" hidden>
+                        <div class="kv" style="margin-bottom:16px">
+                            <div>Radio ID<strong id="foundId">-</strong></div>
+                            <div>Detected type<strong id="foundType">-</strong></div>
+                        </div>
+                        <div class="grid">
+                            <div class="field">
+                                <label for="foundName">Device name</label>
+                                <input id="foundName" />
+                            </div>
+                            <div class="field">
+                                <label>&nbsp;</label>
+                                <div class="row">
+                                    <button class="primary" id="addLearned">Add device</button>
+                                    <button id="discardLearned">Discard</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-config" class="view">
+                <h2>System config</h2>
+                <div id="pollingConfigWarning" class="banner-warn" hidden>
+                    WARNING: It is not possible to read the configuration from this alarm type. Values displayed are defaults. Please correctly configure all values in a section before submitting it.
+                </div>
+                <div id="configPanes">
+                    <div class="body pane">
+                        <h3 class="subhead">Away Arm</h3>
+                        <div class="grid">
+                            <div class="field">
+                                <label for="awayEntryDelay">Entry delay</label>
+                                <select id="awayEntryDelay"></select>
+                            </div>
+                            <div class="field">
+                                <label for="awayExitDelay">Exit delay</label>
+                                <select id="awayExitDelay"></select>
+                            </div>
+                            <div class="field">
+                                <label for="awayEntryDelaySound">Entry delay sound</label>
+                                <select id="awayEntryDelaySound"></select>
+                            </div>
+                            <div class="field">
+                                <label for="awayExitDelaySound">Exit delay sound</label>
+                                <select id="awayExitDelaySound"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:14px">
+                            <button class="primary" id="saveAwayArmConfig">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="body pane">
+                        <h3 class="subhead">Home Arm</h3>
+                        <div class="grid">
+                            <div class="field">
+                                <label for="homeEntryDelay">Entry delay</label>
+                                <select id="homeEntryDelay"></select>
+                            </div>
+                            <div class="field">
+                                <label for="homeExitDelay">Exit delay</label>
+                                <select id="homeExitDelay"></select>
+                            </div>
+                            <div class="field">
+                                <label for="homeEntryDelaySound">Entry delay sound</label>
+                                <select id="homeEntryDelaySound"></select>
+                            </div>
+                            <div class="field">
+                                <label for="homeExitDelaySound">Exit delay sound</label>
+                                <select id="homeExitDelaySound"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:14px">
+                            <button class="primary" id="saveHomeArmConfig">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="body pane">
+                        <h3 class="subhead">General configuration</h3>
+                        <div class="grid">
+                            <div class="field">
+                                <label for="doorContactSound">Door/window contact chime sound</label>
+                                <select id="doorContactSound"></select>
+                            </div>
+                            <div class="field">
+                                <label for="supervision">Supervision</label>
+                                <select id="supervision"></select>
+                            </div>
+                            <div class="field">
+                                <label for="sirenLength">Siren length</label>
+                                <select id="sirenLength"></select>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:14px">
+                            <button class="primary" id="saveGeneralConfig">Save</button>
+                        </div>
+                    </div>
+
+                    <div class="body pane">
+                        <h3 class="subhead">Siren</h3>
+                        <div class="grid">
+                            <div class="field">
+                                <label for="sirenComfortLed">Comfort LED</label>
+                                <select id="sirenComfortLed"></select>
+                            </div>
+                            <div class="field">
+                                <label>&nbsp;</label>
+                                <button class="primary" id="saveSirenComfortLed">Send</button>
+                            </div>
+                            <div class="field">
+                                <label for="sirenTamper">Tamper detection</label>
+                                <select id="sirenTamper"></select>
+                            </div>
+                            <div class="field">
+                                <label>&nbsp;</label>
+                                <button class="primary" id="saveSirenTamper">Send</button>
+                            </div>
+                            <div class="field">
+                                <label for="sirenEntryExitConfirm">Entry/exit confirm</label>
+                                <select id="sirenEntryExitConfirm"></select>
+                            </div>
+                            <div class="field">
+                                <label>&nbsp;</label>
+                                <button class="primary" id="saveSirenEntryExitConfirm">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-info" class="view">
+                <h2>Info</h2>
+                <div class="body">
+                    <div class="kv">
+                        <div>MAC<strong id="identifier">-</strong></div>
+                        <div>Type<strong id="type">-</strong></div>
+                        <div>Version<strong id="version">-</strong></div>
+                        <div>IP address<strong id="ipAddress">-</strong></div>
+                        <div>Last mode change by<strong id="lastUser">-</strong></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="toast"></div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/alarm.js"></script>
+</body>
+</html>

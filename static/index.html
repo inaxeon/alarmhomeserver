@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Alarm Home Server</title>
+    <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+    <header>
+        <h1>Alarm Home Server</h1>
+        <div class="spacer"></div>
+        <button id="refresh">Refresh</button>
+    </header>
+
+    <main>
+        <section>
+            <h2>Connected alarms</h2>
+            <table class="stack">
+                <thead>
+                    <tr>
+                        <th style="width:150px">Name</th>
+                        <th style="width:130px">Type</th>
+                        <th>Version</th>
+                        <th style="width:140px">IP address</th>
+                        <th style="width:140px">Mode</th>
+                    </tr>
+                </thead>
+                <tbody id="alarms"></tbody>
+            </table>
+            <div id="empty" class="empty" hidden>No alarms are currently connected.</div>
+        </section>
+
+        <section>
+            <h2>Discovered alarms (not connected)</h2>
+            <table class="stack">
+                <thead>
+                    <tr>
+                        <th style="width:150px">MAC address</th>
+                        <th style="width:200px">Hardware</th>
+                        <th>Firmware</th>
+                        <th style="width:140px">IP address</th>
+                        <th style="width:140px">Last seen</th>
+                    </tr>
+                </thead>
+                <tbody id="discoveredPanels"></tbody>
+            </table>
+            <div id="discoveredEmpty" class="empty" hidden>No other panels have been found on the network.</div>
+        </section>
+    </main>
+
+    <div id="toast"></div>
+
+    <script src="/js/common.js"></script>
+    <script>
+        async function load() {
+            const tbody = document.getElementById('alarms');
+            const empty = document.getElementById('empty');
+
+            try {
+                const alarms = await Api.get('/panel/list');
+
+                tbody.innerHTML = alarms.map(a => `
+                        <tr class="clickable" data-id="${escapeHtml(a.identifier)}">
+                            <td data-label="Name"><strong>${escapeHtml(a.friendlyName || a.identifier)}</strong></td>
+                            <td data-label="Type">${escapeHtml(a.type)}</td>
+                            <td data-label="Version" class="muted">${escapeHtml(a.version ?? '-')}</td>
+                            <td data-label="IP address" class="muted">${escapeHtml(a.ipAddress ?? '-')}</td>
+                            <td data-label="Mode"><span class="${modeClass(a.mode)}">${escapeHtml(modeLabel(a.mode))}</span></td>
+                        </tr>`).join('');
+
+                empty.hidden = alarms.length > 0;
+
+                tbody.querySelectorAll('tr').forEach(row => {
+                    row.onclick = () => location.href = '/alarm.html?id=' + encodeURIComponent(row.dataset.id);
+                });
+            } catch (e) {
+                reportError(e);
+            }
+        }
+
+        document.getElementById('refresh').onclick = load;
+        load();
+        setInterval(load, 10000);
+
+        async function loadDiscoveredPanels() {
+            const tbody = document.getElementById('discoveredPanels');
+            const empty = document.getElementById('discoveredEmpty');
+
+            try {
+                const panels = await Api.get('/panel/discovered');
+
+                tbody.innerHTML = panels.map(p => `
+                        <tr>
+                            <td data-label="MAC address"><strong>${escapeHtml(p.macAddress)}</strong></td>
+                            <td data-label="Hardware" class="muted">${escapeHtml(p.hwVersion ?? '-')}</td>
+                            <td data-label="Firmware" class="muted">${escapeHtml(p.swVersion ?? '-')}</td>
+                            <td data-label="IP address" class="muted">${panelLink(p)}</td>
+                            <td data-label="Last seen" class="muted">${formatAge((Date.now() - new Date(p.lastSeen)) / 1000)}</td>
+                        </tr>`).join('');
+
+                empty.hidden = panels.length > 0;
+            } catch (e) {
+                reportError(e);
+            }
+        }
+
+        loadDiscoveredPanels();
+        setInterval(loadDiscoveredPanels, 10000);
+
+        function panelLink(p) {
+            if (!p.ipAddress)
+                return '-';
+
+            const port = p.websPort || '80';
+            const url = `http://${p.ipAddress}:${port}`;
+            return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">${escapeHtml(p.ipAddress)}</a>`;
+        }
+
+    </script>
+</body>
+</html>
