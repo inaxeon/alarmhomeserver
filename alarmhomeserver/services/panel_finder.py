@@ -125,6 +125,8 @@ class PanelFinder:
         if headers is None:
             return
 
+        logger.debug("FINDER reply from %s: %s", from_ip, headers)
+
         raw_mac = headers.get("MAC")
         if not raw_mac:
             return
@@ -133,12 +135,12 @@ class PanelFinder:
 
         panel = DiscoveredPanel(
             mac_address=mac,
-            hw_version=headers.get("HwVer"),
-            sw_version=headers.get("SwVer"),
-            lan_type=headers.get("Lan"),
+            hw_version=headers.get("HWVer"),
+            sw_version=headers.get("SWVer"),
+            lan_type=headers.get("LanType"),
             ip_address=headers.get("IP") or from_ip,
             netmask=headers.get("Netmask"),
-            gateway=headers.get("Gateway"),
+            gateway=headers.get("GW"),
             dns1=headers.get("DNS1"),
             dns2=headers.get("DNS2"),
             webs_port=headers.get("WebsPort"),

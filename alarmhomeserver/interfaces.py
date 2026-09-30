@@ -83,8 +83,8 @@ class Panel(abc.ABC):
 
     @abc.abstractmethod
     def set_mode(self, mode: PanelMode, user: int) -> tuple[bool, bool]:
-        """Returns (success, door_open)."""
-
+        ...
+        
     @abc.abstractmethod
     def set_user(self, index: int, name: str, pin: str, latch: bool) -> bool:
         ...

@@ -60,9 +60,6 @@ class _Element:
 
 
 class _StanzaParser:
-    """Incremental XML parser (via expat) that yields complete top-level stanzas, treating the
-    outer <stream:stream> open tag as a stanza of its own (it is never closed until disconnect)."""
-
     def __init__(self):
         self._parser = xml.parsers.expat.ParserCreate()
         self._parser.StartElementHandler = self._on_start

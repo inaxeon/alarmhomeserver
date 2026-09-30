@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Open-source home server for Yale/Climax alarms"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = { text = "GPL-2.0-or-later" }
 dependencies = [
     "fastapi==0.115.6",
     "starlette==0.41.3",
