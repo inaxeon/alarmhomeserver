@@ -19,7 +19,7 @@ Includes listing of open door contacts.
 
 For controlling power switches and requesting media from cameras
 
-![WebUI control](mages/webcontrol.png)
+![WebUI control](images/webcontrol.png)
 # History screen
 
 ![WebUI history](images/webhistory.png)
