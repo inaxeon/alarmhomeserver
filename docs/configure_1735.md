@@ -1,4 +1,4 @@
-# Configuring an CTC-1735 for use with this project
+# Configuring a CTC-1735 for use with this project
 
 To complete configuration you must obtain access to the hub's internal web interface. 
 
