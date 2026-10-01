@@ -6,26 +6,26 @@ The earliest mechanism observed by this project. The alarm simply posts an XML d
 
 The document typically looks like this:
 
-`<?xml version="1.0" encoding="ISO-8859-1"?>`
-`<polling>`
-	`<mac value="00:1D:94:02:55:E2"/>`
-	`<sn value="00:1D:94:02:55:E2"/>`
-	`<rptipid value="1234"/>`
-	`<ver value="CTC-1735 1.0.24 I1735E23K"/>`
-	`<lan value="192.168.0.58:80"/>`
-	`<wan value=":53080"/>`
-	`<port-fw value="0"/>`
-	`<sensor_mod value="1"/>`
-	`<commands>`
-		`<command id="0" action="getPanel">`
-			`<result>1</result>`
-			`<message>OK</message>`
-			`<xmldata>`
-				`...`
-			`</xmldata>`
-		`</command>`
-	`</commands>`
-`</polling>`
+`<?xml version="1.0" encoding="ISO-8859-1"?>
+<polling>
+	<mac value="00:1D:94:02:55:E2"/>
+	<sn value="00:1D:94:02:55:E2"/>
+	<rptipid value="1234"/>
+	<ver value="CTC-1735 1.0.24 I1735E23K"/>
+	<lan value="192.168.0.58:80"/>
+	<wan value=":53080"/>
+	<port-fw value="0"/>
+	<sensor_mod value="1"/>
+	<commands>
+		<command id="0" action="getPanel">
+			<result>1</result>
+			<message>OK</message>
+			<xmldata>
+				...
+			</xmldata>
+		</command>
+	</commands>
+</polling>`
 
 The document contains status information, commands and results. When the server wishes to send a command to an alarm, it must wait for the alarm to "poll". The command is inserted into the polling document returned to the alarm. The server must then wait until next time the alarm "polls" to collect the result. Interacting with alarms this way is SLOW. It was probably fine in the days when the alarms were more likely to be managed over the phone by security companies.
 
