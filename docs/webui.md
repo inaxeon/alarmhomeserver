@@ -10,24 +10,35 @@ Is available at `/docs` and `/openapi.json` respectively should you wish to vibe
 Both connected and "discovered" (via UDP FINDER messages) alarms are shown on this screen.
 
 ![WebUI welcome](images/webuiwelcome.png)
-
 # Mode screen
 
 Includes listing of open door contacts.
 
 ![WebUI mode](images/webuimode.png)
+# Control screen
 
+For controlling power switches and requesting media from cameras
+
+![WebUI control](mages/webcontrol.png)
+# History screen
+
+![WebUI history](images/webhistory.png)
 # Edit users screen
+
 ![WebUI users](images/webuiusers.png)
 
 # Walk test screen
+
 ![WebUI walk test](images/webuiwalktest.png)
 
 # Edit devices screen
+
 ![WebUI devices](images/webuidevices.png)
 
 # Device pairing screen
+
 ![WebUI pairing](images/webuipair.png)
 
 # Settings screen
+
 ![WebUI pairing](images/webuisettings.png)

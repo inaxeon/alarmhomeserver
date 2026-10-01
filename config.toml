@@ -56,6 +56,7 @@ emails_from_address = "alarm@testdomain.com" # Address notification emails are s
 emails_to = "user@testdomain.com"            # Semicolon separated list of emails notifications are sent to.
 media_save_path = '/path/to/media'           # Path on disk where media files are saved to. Omit this setting to skip saving to disk.
 email_media = false                          # Set to true to email captured media to configured recipients.
+# account_number = 1234                      # For HTTP polling alarms only. See setup instructions for more information.
 
 [logging]
 level = "INFO"

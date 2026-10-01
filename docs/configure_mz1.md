@@ -12,13 +12,13 @@ It will find any Climax alarm system on a local network regardless of brand.
 
 ![Lupus IP finder](images/lupusfinder.png)
 
-Enter http://<ip_address>/ into your browser. You will be prompted for credentials. The username and password *should* be admin / admin1234. **NOTE**: These credentials will not work for later TLS-enabled alarm hubs.
+Enter `http://<ip_address>/` into your browser. You will be prompted for credentials. The username and password *should* be admin / admin1234. **NOTE**: These credentials will not work for later TLS-enabled alarm hubs.
 
 ![Welcome screen](images/webwelcome.png)
 
 First browse to the "Network" tab:
 ![Network tab](images/xmppconfig.png)
-In the XMPP field change the hostname from yalehomesystem.co.uk to the address of your server. The domain and buddy fields aren't checked by this project. You should see the alarm negotiate and connect to your server in the logs within a few seconds. XMPP is the management interface for these alarms.
+In the XMPP field change the hostname from `yalehomesystem.co.uk` to the address of your server. The domain and buddy fields aren't checked by this project. You should see the alarm negotiate and connect to your server in the logs within a few seconds. XMPP is the management interface for these alarms.
 
 Now head to the "Report" tab:
 
@@ -32,7 +32,7 @@ If you are using any PIR cameras head to the "Upload" tab:
 
 ![Upload tab](images/uploadconfig.png)
 
-Once again replace the address of the Yale server with your own. Change the path to "/media/upload". Set the Prefix to the lowercase MAC address as before.
+Once again replace the address of the Yale server with your own. Change the path to `/media/upload`. Set the Prefix to the lowercase MAC address as before.
 
 # That's it!
 

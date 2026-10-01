@@ -14,11 +14,11 @@ Hit "I'm already a customer". Oddly the register link leads to a sign-up page on
 
 ![1815 XMPP screen](images/1815xmpp.png)
 
-There is no link in the navigation menu to configure the XMPP server. Manually enter the path "/setting/xmpp.htm" into the URL bar. Replace yalehomesystem.co.uk with your own server address.
+There is no link in the navigation menu to configure the XMPP server. Manually enter the path `/setting/xmpp.htm` into the URL bar. Replace `yalehomesystem.co.uk` with your own server address.
 
 ![1815 report screen](images/1815report.png)
 
-There's no link to the CID report setting screen either. Once again enter the path manually into your browser: "/setting/report.htm". Configure as above. Replace the server address with your own and set the prefix to be the alarm MAC address all lowercase.
+There's no link to the CID report setting screen either. Once again enter the path manually into your browser: `/setting/report.htm`. Configure as above. Replace the server address with your own and set the prefix to be the alarm MAC address all lowercase.
 
 ![1815 upload screen](images/1815upload.png)
 
